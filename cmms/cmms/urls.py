@@ -17,9 +17,9 @@ from django.contrib import admin
 from django.urls import path
 
 #from breakdowns import views
-import breakdowns
+from breakdowns import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', breakdowns.views.home_page, name='home_page'),
+    path('', views.home_page, name='home_page'),
 ]
