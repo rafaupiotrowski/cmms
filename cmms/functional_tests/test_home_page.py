@@ -13,10 +13,16 @@ class FunctionalTest(LiveServerTestCase):
         self.browser.implicitly_wait(10)
         print(self.live_server_url, file=sys.stderr)
 
-#User enter home site and see Django in title
+
+    @classmethod
+    def tearDownClass(self):
+        self.browser.quit()
+        super().tearDownClass()
+
+    #User enter home site and see cmms in title
     def test_Django_in_title(self):
         self.browser.implicitly_wait(10)
         self.browser.get(self.live_server_url)
         print('łącze do: ', self.live_server_url, file=sys.stderr)
         self.browser.implicitly_wait(100)
-        self.assertIn('Django', self.browser.title)
+        self.assertIn('cmms', self.browser.title)
