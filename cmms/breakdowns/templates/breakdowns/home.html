@@ -8,8 +8,9 @@
     <h1>Zarejestruj awarię</h1>
     <label for="machines_list">Wybierz maszynę</label>
     <select class="" id="machines_list">
-    <option value="Machine 1"> Machine 1</option>
-    <<option value="Machine 2">Machine 2</option>
+      {% for machine in all_machines %}
+      <option value="">machine</option>
+      {% endfor %}
     </select>
   </div>
 </body>
