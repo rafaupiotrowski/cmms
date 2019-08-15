@@ -27,8 +27,9 @@ class FunctionalTest(LiveServerTestCase):
     #In home page breakdown can be registered
     #Machine can be chosen from dropdown menu
     def test_machine_dropdown_list_on_home_page(self):
-        self.browser.get(self.live_server_url)
         machine = Machine.objects.create(name="Machine 1")
+        self.browser.get(self.live_server_url)
+        self.browser.implicitly_wait(10)
         machines_list = self.browser.find_element_by_tag_name("select")
         all_options = machines_list.find_elements_by_tag_name("option")
         all_options = [option.get_attribute("text") for option in all_options]

@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from .views import home_page
 from .models import Machine
+from .forms import BreakdownForm
 
 
 class HomePageTest(TestCase):
@@ -14,9 +15,6 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
-    def test_home_page_view_sends_all_machines_to_template(self):
-        machine_1 = Machine.objects.create(name="Machine 1")
-        machine_2 = Machine.objects.create(name="Machine 2")
-        machines_list = [machine_1, machine_2]
+    def test_home_page_uses_breakdown_form(self):
         response = self.client.get('/')
-        self.assertEqual(len(response.context['all_machines']), len(machines_list))
+        self.assertIsInstance(response.context['form'], BreakdownForm)

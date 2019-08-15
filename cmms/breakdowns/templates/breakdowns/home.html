@@ -6,12 +6,10 @@
 <body>
   <div id="content">
     <h1>Zarejestruj awarię</h1>
-    <label for="machines_list">Wybierz maszynę</label>
-    <select class="" id="machines_list">
-      {% for machine in all_machines %}
-      <option value="">machine</option>
-      {% endfor %}
-    </select>
+    <form class="" action="home.html" method="post">
+      {% csrf_token %}
+      {{ form }}
+    </form>
   </div>
 </body>
 </html>
