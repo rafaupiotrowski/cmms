@@ -6,6 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 from breakdowns.models import Machine
 
+
 class FunctionalTest(LiveServerTestCase):
 
     @classmethod
@@ -18,21 +19,21 @@ class FunctionalTest(LiveServerTestCase):
         self.browser.quit()
         super().tearDownClass()
 
-    #User enter home site and see cmms in title
+    # User enter home site and see cmms in title
     def test_cmms_in_title(self):
         self.browser.implicitly_wait(10)
         self.browser.get(self.live_server_url)
         print('łącze do: ', self.live_server_url, file=sys.stderr)
         self.assertIn('Cmms', self.browser.title)
 
-    #In home page breakdown can be registered...
+    # In home page breakdown can be registered...
     def test_register_breakdown_on_home_page(self):
         self.browser.get(self.live_server_url)
         self.assertIn('Register breakdown', self.browser.page_source)
 
-    #...Machine can be chosen from dropdown menu...
+    # ...Machine can be chosen from dropdown menu...
     def test_machine_dropdown_list_on_home_page(self):
-        machine = Machine.objects.create(name="Machine 1")
+        Machine.objects.create(name="Machine 1")
         self.browser.get(self.live_server_url)
         self.browser.implicitly_wait(10)
         machines_list = self.browser.find_element_by_tag_name("select")
@@ -40,7 +41,7 @@ class FunctionalTest(LiveServerTestCase):
         all_options = [option.get_attribute("text") for option in all_options]
         self.assertIn('Machine 1', all_options)
 
-    #...and breakdown time can be picked.
+    # ...and breakdown time can be picked.
     def test_datetime_picker_for_breakdown_time_available(self):
         self.browser.get(self.live_server_url)
         try:
