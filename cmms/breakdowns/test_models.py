@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.db.utils import IntegrityError
+from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 
 from .models import Machine, Breakdown
 
@@ -19,7 +21,16 @@ class MachineModelTest(TestCase):
 class MachineBreakdownTest(TestCase):
     def test_breakdown_is_related_to_machine(self):
         machine = Machine.objects.create(name='Machine 1')
-        breakdown = Breakdown()
-        breakdown.machine = machine
-        breakdown.save()
-        self.assertEqual(machine, breakdown.machine)
+        breakdown = Breakdown.objects.create(machine=machine)
+        self.assertIn(breakdown, machine.breakdown_set.all())
+
+    def test_breakdown_saves_start_time(self):
+        machine = Machine.objects.create(name='Machine 1')
+        breakdown = Breakdown.objects.create(
+            machine=machine,
+            start_time=timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
+            )
+        self.assertEqual(
+            breakdown.start_time,
+            timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
+            )
