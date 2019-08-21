@@ -28,7 +28,8 @@ class MachineBreakdownTest(TestCase):
         machine = Machine.objects.create(name='Machine 1')
         breakdown = Breakdown.objects.create(
             machine=machine,
-            start_time=timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
+            start_time=timezone.make_aware(
+                parse_datetime('2000-01-01 12:00:00'))
             )
         self.assertEqual(
             breakdown.start_time,

@@ -7,3 +7,4 @@ from .models import Machine
 
 class BreakdownForm(forms.Form):
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
+    start_datetime = forms.DateTimeField()
