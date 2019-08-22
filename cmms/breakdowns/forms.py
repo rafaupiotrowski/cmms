@@ -2,9 +2,13 @@ from django import forms
 from django.forms import ModelForm
 
 
-from .models import Machine
+from .models import Breakdown
 
 
-class BreakdownForm(forms.Form):
-    machine = forms.ModelChoiceField(queryset=Machine.objects.all())
-    start_datetime = forms.DateTimeField()
+class BreakdownForm(ModelForm):
+
+    #start_time = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M'])
+
+    class Meta:
+        model = Breakdown
+        fields = ['machine', 'start_time']
