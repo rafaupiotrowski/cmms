@@ -39,4 +39,9 @@ class BreakdownFormTest(TestCase):
         self.assertFalse(form.is_valid())
 
     def test_form_does_not_accept_start_time_in_future(self):
-        pass
+        machine = Machine.objects.create(name='Machine 1')
+        start_time = '2119-10-25 14:30'
+        data = {'machine': machine.id, 'start_time': start_time}
+        form = BreakdownForm(data)
+        form.is_valid()
+        self.assertFalse(form.is_valid())
