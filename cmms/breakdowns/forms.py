@@ -11,8 +11,12 @@ class BreakdownForm(ModelForm):
 
     class Meta:
         model = Breakdown
-        fields = ['machine', 'start_time']
+        fields = ['machine', 'start_time', 'end_time']
 
     start_time = forms.DateTimeField(
+        input_formats=['%Y-%m-%d %H:%M'],
+        validators=[MaxValueValidator(timezone.now())])
+
+    end_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
         validators=[MaxValueValidator(timezone.now())])

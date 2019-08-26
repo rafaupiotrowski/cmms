@@ -26,12 +26,16 @@ class MachineBreakdownTest(TestCase):
 
     def test_breakdown_saves_start_time(self):
         machine = Machine.objects.create(name='Machine 1')
+        start_time = timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
         breakdown = Breakdown.objects.create(
-            machine=machine,
-            start_time=timezone.make_aware(
-                parse_datetime('2000-01-01 12:00:00'))
-            )
-        self.assertEqual(
-            breakdown.start_time,
-            timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
-            )
+            machine=machine, start_time=start_time)
+
+        self.assertEqual(breakdown.start_time, start_time)
+
+    def test_breakdown_saves_end_time(self):
+        machine = Machine.objects.create(name='Machine 1')
+        end_time = timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
+        breakdown = Breakdown.objects.create(
+            machine=machine, end_time=end_time)
+
+        self.assertEqual(breakdown.end_time, end_time)
