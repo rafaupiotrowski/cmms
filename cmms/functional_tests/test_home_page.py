@@ -2,6 +2,7 @@ from django.contrib.staticfiles.testing import LiveServerTestCase
 import sys
 
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
 from breakdowns.models import Machine
@@ -41,10 +42,13 @@ class FunctionalTest(LiveServerTestCase):
         all_options = [option.get_attribute("text") for option in all_options]
         self.assertIn('Machine 1', all_options)
 
-    # ...and breakdown time can be picked.
+    # ...and breakdown time can be picked. User enter start and end time...
     def test_datetime_picker_for_breakdown_time_available(self):
         self.browser.get(self.live_server_url)
-        try:
-            self.browser.find_element_by_id('breakdown_start')
-        except NoSuchElementException:
-            self.fail("Nie odnaleziono breakdown_start")
+        breakdown_start = self.browser.find_element_by_id('id_start_time')
+        breakdown_start.send_keys('2009-10-25 14:30')
+        breakdown_end = self.browser.find_element_by_id('id_end_time')
+        breakdown_end.send_keys('2009-10-26 14:30')
+
+    # and press 'save' button
+        self.browser.find_element_by_id('save_breakdown').click()
