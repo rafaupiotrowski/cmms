@@ -15,7 +15,7 @@ class BreakdownForm(ModelForm):
 
     start_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
-        #validators=[MaxValueValidator(timezone.now())]
+        validators=[MaxValueValidator(timezone.now())]
         )
 
     end_time = forms.DateTimeField(
@@ -27,3 +27,13 @@ class BreakdownForm(ModelForm):
         if start_time > timezone.now():
             raise forms.ValidationError('date_from_future!')
         return start_time
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+
+        if start_time and end_time and (start_time > end_time):
+            raise forms.ValidationError(
+                'End time before start time'
+            )
