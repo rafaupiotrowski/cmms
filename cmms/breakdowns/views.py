@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+
+from bootstrap_datepicker_plus import DateTimePickerInput
 
 from .forms import BreakdownForm
 
@@ -7,12 +8,12 @@ from .forms import BreakdownForm
 
 
 def home_page(request):
-    form = BreakdownForm()
+    breakdown_form = BreakdownForm()
 
     if request.method == 'POST':
-        form = BreakdownForm(data=request.POST)
-        if form.is_valid():
-            form.save()
+        breakdown_form = BreakdownForm(data=request.POST)
+        if breakdown_form.is_valid():
+            breakdown_form.save()
     return render(request, 'breakdowns/home.html', {
-        "form": form,
+        "form": breakdown_form,
     })

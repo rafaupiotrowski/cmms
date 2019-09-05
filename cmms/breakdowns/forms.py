@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from django.core.validators import MaxValueValidator
 from django.utils import timezone
 
+from bootstrap_datepicker_plus import DateTimePickerInput
 
 from .models import Breakdown
 
@@ -15,11 +16,13 @@ class BreakdownForm(ModelForm):
 
     start_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
+        widget=DateTimePickerInput(options={'format': 'YYYY-MM-DD HH:mm'}),
         validators=[MaxValueValidator(timezone.now())]
         )
 
     end_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
+        widget=DateTimePickerInput(options={'format': 'YYYY-MM-DD HH:mm'}),
         validators=[MaxValueValidator(timezone.now())])
 
     def clean_start_time(self):
