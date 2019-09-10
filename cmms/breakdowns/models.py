@@ -16,3 +16,4 @@ class Breakdown(models.Model):
         Machine, default=None, on_delete=models.CASCADE)
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(default=timezone.now)
+    breakdown_description = models.TextField(blank=False)

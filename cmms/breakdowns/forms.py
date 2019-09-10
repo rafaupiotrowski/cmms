@@ -12,7 +12,7 @@ class BreakdownForm(ModelForm):
 
     class Meta:
         model = Breakdown
-        fields = ['machine', 'start_time', 'end_time']
+        fields = ['machine', 'start_time', 'end_time', 'breakdown_description']
 
     start_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
@@ -24,12 +24,6 @@ class BreakdownForm(ModelForm):
         input_formats=['%Y-%m-%d %H:%M'],
         widget=DateTimePickerInput(options={'format': 'YYYY-MM-DD HH:mm'}),
         validators=[MaxValueValidator(timezone.now())])
-
-    def clean_start_time(self):
-        start_time = self.cleaned_data['start_time']
-        if start_time > timezone.now():
-            raise forms.ValidationError('date_from_future!')
-        return start_time
 
     def clean(self):
         cleaned_data = super().clean()

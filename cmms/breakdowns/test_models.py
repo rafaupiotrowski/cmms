@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.db.utils import IntegrityError
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from .models import Machine, Breakdown
 
@@ -39,3 +40,12 @@ class MachineBreakdownTest(TestCase):
             machine=machine, end_time=end_time)
 
         self.assertEqual(breakdown.end_time, end_time)
+
+    def test_breakdown_description_cannot_be_empty(self):
+        machine = Machine.objects.create(name='Machine 1')
+        breakdown = Breakdown.objects.create(
+            machine=machine,
+            breakdown_description='')
+        with self.assertRaises(ValidationError):
+            breakdown.save()
+            breakdown.full_clean()

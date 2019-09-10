@@ -23,8 +23,12 @@ class HomePageTest(TestCase):
         machine = Machine.objects.create(name='Machine 1')
         start_time = '2009-10-25 14:30'
         end_time = '2009-10-25 15:30'
-        data = {'machine': machine.id, 'start_time': start_time,
-                'end_time': end_time}
+        breakdown_description = 'Test view'
+        data = {
+            'machine': machine.id,
+            'start_time': start_time,
+            'end_time': end_time,
+            'breakdown_description': breakdown_description}
         self.client.post(
             '/', data=data
         )
