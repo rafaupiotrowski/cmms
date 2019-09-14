@@ -25,6 +25,13 @@
           {% bootstrap_form form %}
           <input type="submit" name="" value="Save" id="save_breakdown">
         </form>
+        {% if messages %}
+        <ul class="messages" id="messages">
+          {% for message in messages %}
+          <li class="alert alert-success" id="test_message">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
       </div>
     </div>
   </div>
