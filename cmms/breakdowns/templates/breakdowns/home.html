@@ -25,13 +25,21 @@
           {% bootstrap_form form %}
           <input type="submit" name="" value="Save" id="save_breakdown">
         </form>
-        {% if messages %}
-        <ul class="messages" id="messages">
-          {% for message in messages %}
-          <li class="alert alert-success" id="test_message">{{ message }}</li>
+        <div class="messages">
+          {% if messages %}
+          <ul class="messages" id="messages">
+            {% for message in messages %}
+            <li class="alert alert-success" id="test_message">{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        <div class="last_breakdowns" id="last_breakdowns">
+          <h2>Last breakdowns:</h2>
+          {% for breakdown in last_breakdowns %}
+          <h2>{{ breakdown.breakdown_description }}</h2>
           {% endfor %}
-        </ul>
-        {% endif %}
+        </div>
       </div>
     </div>
   </div>
