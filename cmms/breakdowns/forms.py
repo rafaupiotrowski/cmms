@@ -17,13 +17,16 @@ class BreakdownForm(ModelForm):
     start_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
         widget=DateTimePickerInput(options={'format': 'YYYY-MM-DD HH:mm'}),
-        validators=[MaxValueValidator(timezone.now())]
+        validators=[MaxValueValidator(timezone.now())],
+        error_messages={'max_value': 'Start time in future.'}
         )
 
     end_time = forms.DateTimeField(
         input_formats=['%Y-%m-%d %H:%M'],
         widget=DateTimePickerInput(options={'format': 'YYYY-MM-DD HH:mm'}),
-        validators=[MaxValueValidator(timezone.now())])
+        validators=[MaxValueValidator(timezone.now())],
+        error_messages={'max_value': 'End time in future.'}
+        )
 
     def clean(self):
         cleaned_data = super().clean()

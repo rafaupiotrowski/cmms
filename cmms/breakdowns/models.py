@@ -17,3 +17,10 @@ class Breakdown(models.Model):
     start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(default=timezone.now)
     breakdown_description = models.TextField(blank=False)
+
+    def __str__(self):
+        answer = ' '.join((
+            'Machine: ', str(self.machine),
+            '\n breakdown_description: ', self.breakdown_description
+        ))
+        return answer

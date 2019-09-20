@@ -42,7 +42,7 @@ class BreakdownFormTest(TestCase):
         new_breakdown = form.save()
         self.assertEqual(new_breakdown, Breakdown.objects.all()[0])
 
-    def test_form_does_not_accept_start_time_in_future(self):
+    def test_form_does_not_validate_start_time_in_future(self):
         data = self.correct_data
         start_time_in_future = '3009-10-25 14:30'
         data['start_time'] = start_time_in_future
@@ -50,7 +50,15 @@ class BreakdownFormTest(TestCase):
         form = BreakdownForm(incorrect_data)
         self.assertFalse(form.is_valid())
 
-    def test_form_does_not_accept_end_time_in_future(self):
+    def test_form_generate_error_message_if_start_time_in_future(self):
+        data = self.correct_data
+        start_time_in_future = '3009-10-25 14:30'
+        data['start_time'] = start_time_in_future
+        incorrect_data = data
+        form = BreakdownForm(incorrect_data)
+        self.assertIn('Start time in future.', form.errors['start_time'])
+
+    def test_form_does_not_validate_end_time_in_future(self):
         data = self.correct_data
         end_time_in_future = '3009-10-25 14:30'
         data['end_time'] = end_time_in_future
@@ -58,7 +66,15 @@ class BreakdownFormTest(TestCase):
         form = BreakdownForm(incorrect_data)
         self.assertFalse(form.is_valid())
 
-    def test_for_start_time_before_end_time(self):
+    def test_form_generate_error_message_if_end_time_in_future(self):
+        data = self.correct_data
+        end_time_in_future = '3009-10-25 14:30'
+        data['end_time'] = end_time_in_future
+        incorrect_data = data
+        form = BreakdownForm(incorrect_data)
+        self.assertIn('End time in future.', form.errors['end_time'])
+
+    def test_start_time_before_end_time_not_valid(self):
         data = self.correct_data
         start_time = '2009-10-25 14:30'
         end_time = '2009-10-24 15:30'

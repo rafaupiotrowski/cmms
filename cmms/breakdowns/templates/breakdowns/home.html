@@ -16,12 +16,23 @@
   <title>Cmms</title>
 </head>
 <body>
+
   <div class="container-fluid">
     <div id="content">
       <div class="col-md-6 offset-md-3 jumbotron">
         <h1>Register breakdown</h1>
         <form class="" action="{% url 'home_page' %}" method="post">
           {% csrf_token %}
+          {% if form.errors %}
+          <h6>Please correct errors:</h6>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible alert-link" role="alert">
+                   {{ error }}
+                </div>
+              {% endfor %}
+            {% endfor %}
+          {% endif %}
           {% bootstrap_form form %}
           <input type="submit" name="" value="Save" id="save_breakdown">
         </form>
@@ -35,10 +46,27 @@
           {% endif %}
         </div>
         <div class="last_breakdowns" id="last_breakdowns">
-          <h2>Last breakdowns:</h2>
-          {% for breakdown in last_breakdowns %}
-          <h2>{{ breakdown.breakdown_description }}</h2>
-          {% endfor %}
+          <h2>Last breakdowns</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Machine</th>
+                  <th>Description</th>
+                  <th>Start time</th>
+                  <th>End time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for breakdown in last_breakdowns %}
+                <tr>
+                  <td>{{ breakdown.machine }}</td>
+                  <td>{{ breakdown.breakdown_description }}</td>
+                  <td>{{ breakdown.start_time }}</td>
+                  <td>{{breakdown.end_time }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
         </div>
       </div>
     </div>
