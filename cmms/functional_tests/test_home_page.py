@@ -1,4 +1,4 @@
-from django.contrib.staticfiles.testing import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import sys
 
 from selenium import webdriver
@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import Select
 from breakdowns.models import Machine
 
 
-class FunctionalTest(LiveServerTestCase):
+class FunctionalTest(StaticLiveServerTestCase):
 
     @classmethod
     def setUpClass(self):
@@ -66,3 +66,8 @@ class BreakdownRegistrationTest(FunctionalTest):
     # created failure is now displayed under the form
         last_breakdowns = self.browser.find_element_by_id('last_breakdowns').text
         self.assertIn("motor", last_breakdowns)
+
+    # user choose 'All breakdowns' option from sidebar
+        all_breakdowns = self.browser.find_element_by_link_text('All breakdowns')
+        all_breakdowns.click()
+        self.assertIn("Registered breakdowns", self.browser.page_source)

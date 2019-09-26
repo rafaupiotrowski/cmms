@@ -21,4 +21,5 @@ from breakdowns import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_page, name='home_page'),
+    path('all_breakdowns', views.all_breakdowns, name='all_breakdowns'),
 ]
