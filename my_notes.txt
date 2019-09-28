@@ -8,3 +8,8 @@ Run conda install pip. This will install pip to your venv directory.
 Find your anaconda directory, and find the actual venv folder. It should be somewhere like /anaconda/envs/venv_name/.
 Install new packages by doing /anaconda/envs/venv_name/bin/pip install package_name.
 This should now successfully install packages using that virtual environment's pip!
+
+
+raise AmbiguousTimeError(dt)
+pytz.exceptions.AmbiguousTimeError: 2009-10-25 02:30:00
+This was caused because in this specific date we had time change!

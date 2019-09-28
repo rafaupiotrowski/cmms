@@ -21,6 +21,8 @@ class Breakdown(models.Model):
     def __str__(self):
         answer = ' '.join((
             'Machine: ', str(self.machine),
-            '\n breakdown_description: ', self.breakdown_description
+            '\n breakdown_description: ', self.breakdown_description,
+            '\n start time: ', str(self.start_time),
+            '\n end time: ', str(self.end_time),
         ))
         return answer

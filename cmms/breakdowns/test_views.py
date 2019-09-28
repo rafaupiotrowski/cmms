@@ -2,6 +2,8 @@ import unittest
 
 from django.urls import resolve
 from django.test import TestCase
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 from .views import home_page
 from .models import Machine, Breakdown
@@ -11,11 +13,11 @@ import sys
 
 
 class HomePageTest(TestCase):
-    def prepare_breakdown_data(
+    def prepare_breakdown_form_data(
             self,
             machine_name='Machine 1',
-            start_time='2009-10-25 14:30',
-            end_time='2009-10-25 15:30',
+            start_time='2009-10-01 14:30',
+            end_time='2009-10-01 15:30',
             breakdown_description='Test brekdown'):
         self.machine = Machine.objects.create(name=machine_name)
         self.breakdown_data = {
@@ -38,31 +40,41 @@ class HomePageTest(TestCase):
         self.assertIsInstance(response.context['form'], BreakdownForm)
 
     def test_home_page_can_save_breakdown_from_POST_request(self):
-        breakdown_data = self.prepare_breakdown_data()
+        breakdown_data = self.prepare_breakdown_form_data()
         self.client.post(
             '/', data=breakdown_data
         )
 
         self.assertEqual(Breakdown.objects.all().count(), 1)
 
-    @unittest.skip
-    def test_last_breakdown_is_passed_to_template(self):
-        breakdowns = []
-        breakdown_data = self.prepare_breakdown_data()
-        for x in range(10):
-            start_time = '2009-10-25 %s:30' % x
-            breakdown_data['start_time'] = start_time
-            print(breakdown_data, file=sys.stderr)
-            breakdown = Breakdown.objects.create(**breakdown_data)
-            breakdowns.append(breakdown)
-        last_breakdown = self.prepare_breakdown_data(start_time='2009-10-25 9:30')
-        response = self.client.get('/')
-
-        self.assertEqual(response.context['last_breakdowns'][0], last_breakdown)
-
 
 class AllBreakdownsViewTest(TestCase):
+    def setUp(self):
+        self.machine = Machine.objects.create(name='Machine 1')
+
+    def prepare_breakdown(
+            self,
+            start_time='2009-10-01 14:30',
+            end_time='2009-10-01 15:30',
+            breakdown_description='Test breakdown'):
+        start_time = timezone.make_aware(parse_datetime(start_time))
+        end_time = timezone.make_aware(parse_datetime(end_time))
+        Breakdown.objects.create(
+            machine=self.machine,
+            start_time=start_time,
+            end_time=end_time,
+            breakdown_description=breakdown_description)
+
     def test_all_breakdowns_template_used(self):
         response = self.client.get('/all_breakdowns')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'all_breakdowns.html')
+
+    def test_last_breakdowns_are_passed_to_all_breakdowns_template(self):
+        for x in range(10):
+            start_time = '2009-10-01 %s:30' % x
+            self.prepare_breakdown(start_time=start_time)
+        last_breakdown = Breakdown.objects.all().order_by('-end_time')[0]
+        response = self.client.get('/all_breakdowns')
+
+        self.assertEqual(response.context['last_breakdowns'][0], last_breakdown)
