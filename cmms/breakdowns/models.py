@@ -19,10 +19,10 @@ class Breakdown(models.Model):
     breakdown_description = models.TextField(blank=False)
 
     def __str__(self):
-        answer = ' '.join((
+        answer = ''.join((
             'Machine: ', str(self.machine),
-            '\n breakdown_description: ', self.breakdown_description,
-            '\n start time: ', str(self.start_time),
-            '\n end time: ', str(self.end_time),
+            '\nbreakdown_description: ', self.breakdown_description,
+            '\nstart time: ', str(self.start_time),
+            '\nend time: ', str(self.end_time),
         ))
         return answer

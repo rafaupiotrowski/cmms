@@ -20,32 +20,48 @@ class MachineModelTest(TestCase):
 
 
 class MachineBreakdownTest(TestCase):
+    def setUp(self):
+        self.machine = Machine.objects.create(name='Machine 1')
+
     def test_breakdown_is_related_to_machine(self):
-        machine = Machine.objects.create(name='Machine 1')
-        breakdown = Breakdown.objects.create(machine=machine)
-        self.assertIn(breakdown, machine.breakdown_set.all())
+        breakdown = Breakdown.objects.create(machine=self.machine)
+        self.assertIn(breakdown, self.machine.breakdown_set.all())
 
     def test_breakdown_saves_start_time(self):
-        machine = Machine.objects.create(name='Machine 1')
         start_time = timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
         breakdown = Breakdown.objects.create(
-            machine=machine, start_time=start_time)
+            machine=self.machine, start_time=start_time)
 
         self.assertEqual(breakdown.start_time, start_time)
 
     def test_breakdown_saves_end_time(self):
-        machine = Machine.objects.create(name='Machine 1')
         end_time = timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
         breakdown = Breakdown.objects.create(
-            machine=machine, end_time=end_time)
+            machine=self.machine, end_time=end_time)
 
         self.assertEqual(breakdown.end_time, end_time)
 
     def test_breakdown_description_cannot_be_empty(self):
-        machine = Machine.objects.create(name='Machine 1')
         breakdown = Breakdown.objects.create(
-            machine=machine,
+            machine=self.machine,
             breakdown_description='')
         with self.assertRaises(ValidationError):
             breakdown.save()
             breakdown.full_clean()
+
+    def test_breakdown_string_represantation(self):
+        start_time = timezone.make_aware(parse_datetime('2000-01-01 12:00:00'))
+        end_time = timezone.make_aware(parse_datetime('2000-01-01 13:00:00'))
+        description = 'Test breakdown'
+        breakdown = Breakdown.objects.create(
+            machine=self.machine, start_time=start_time, end_time=end_time,
+            breakdown_description=description)
+        breakdown_as_string = '''Machine: Machine 1
+                                breakdown_description: Test breakdown
+                                start time: 2000-01-01 12:00:00+01:00
+                                end time: 2000-01-01 13:00:00+01:00'''\
+                                .replace(' ', '')
+
+        self.assertEqual(
+                        breakdown.__str__().replace(' ', ''),
+                        breakdown_as_string)

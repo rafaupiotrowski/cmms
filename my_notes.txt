@@ -13,3 +13,6 @@ This should now successfully install packages using that virtual environment's p
 raise AmbiguousTimeError(dt)
 pytz.exceptions.AmbiguousTimeError: 2009-10-25 02:30:00
 This was caused because in this specific date we had time change!
+
+Exporting current environment to yml file.
+conda env export > environment.yml
