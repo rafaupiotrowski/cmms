@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
+<!--  load widget_tweaks  -->
 {% block content %}
-  <h1>Registered breakdowns:</h1>
+<div class="well" id=Filtering>
+  <h1>Filter breakdowns</h1>
+  <form class="form-group" method="get">
+    {% bootstrap_form form %}
+    <button type="submit">Search</button>
+  </form>
+</div>
   <table class="table" id='all_breakdowns_table'>
     <h2>{{ breakdown.breakdown_description }}</h2>
       <thead>
@@ -12,7 +20,7 @@
        </tr>
      </thead>
      <tbody>
-       {% for breakdown in last_breakdowns %}
+       {% for breakdown in filter.qs %}
        <tr>
          <td>{{ breakdown.machine }}</td>
          <td>{{ breakdown.breakdown_description }}</td>
