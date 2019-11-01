@@ -7,7 +7,6 @@
 </form>
   <h1>Registered breakdowns:</h1>
   <table class="table" id='all_breakdowns_table'>
-    <h2>{{ breakdown.breakdown_description }}</h2>
       <thead>
         <tr>
          <th>Machine</th>
@@ -17,7 +16,7 @@
        </tr>
      </thead>
      <tbody>
-       {% for breakdown in last_breakdowns %}
+       {% for breakdown in results %}
        <tr>
          <td>{{ breakdown.machine }}</td>
          <td>{{ breakdown.breakdown_description }}</td>
