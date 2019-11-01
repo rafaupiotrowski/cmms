@@ -58,7 +58,7 @@ class BreakdownRegistrationTest(FunctionalTest):
         self.browser.find_element_by_id('save_breakdown').click()
 
     # message about succesful breakdown save is displayed
-        list_items = self.browser.find_elements_by_tag_name('li')
+        list_items = self.browser.find_elements_by_id('messages')
         messages = [li.text for li in list_items]
         self.browser.implicitly_wait(10)
         self.assertIn('Breakdown successfully saved.', messages)

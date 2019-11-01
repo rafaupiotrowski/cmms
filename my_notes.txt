@@ -1,4 +1,5 @@
 If you are using Chrome version 76, please download ChromeDriver 76.0.3809.68
+Copy correct Chromedriver to /usr/local/bin.
 
 Installation of pip package in conda:
 For others who run into this situation, I found this to be the most straightforward solution:
