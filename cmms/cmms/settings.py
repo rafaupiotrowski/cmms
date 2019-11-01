@@ -25,7 +25,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.16']
+ALLOWED_HOSTS = ['192.168.0.16', 'localhost']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'breakdowns',
     'bootstrap4',
     'bootstrap_datepicker_plus',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [

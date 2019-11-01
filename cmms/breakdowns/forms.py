@@ -37,3 +37,7 @@ class BreakdownForm(ModelForm):
             raise forms.ValidationError(
                 'End time before start time'
             )
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()

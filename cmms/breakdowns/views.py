@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.contrib.postgres.search import SearchVector
 
-from .forms import BreakdownForm
+from .forms import BreakdownForm, SearchForm
 from .models import Breakdown
 
 # Create your views here.
@@ -21,6 +22,37 @@ def home_page(request):
 
 
 def all_breakdowns(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Breakdown.objects.annotate(
+                search=SearchVector('breakdown_description'),
+            ).filter(search=query)
     last_breakdowns = Breakdown.objects.all().order_by('-end_time')[:5]
     return render(request, 'all_breakdowns.html', {
-        'last_breakdowns': last_breakdowns, })
+        'last_breakdowns': last_breakdowns,
+        'form': form,
+        'query': query,
+        'results': results})
+
+
+def breakdown_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Breakdown.objects.annotate(
+                search=SearchVector('breakdown_description'),
+            ).filter(search=query)
+    return render(
+                request, 'all_breakdowns.html',
+                {'form': form,
+                'query': query,
+                'results': results})
