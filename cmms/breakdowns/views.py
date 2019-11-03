@@ -22,7 +22,8 @@ def home_page(request):
 
 
 def all_breakdowns(request):
-    form = SearchForm()
+    #form = SearchForm()
+    form = BreakdownForm()
     last_breakdowns = Breakdown.objects.all().order_by('-end_time')[:5]
     return render(request, 'all_breakdowns.html', {
         'results': last_breakdowns,
@@ -30,17 +31,19 @@ def all_breakdowns(request):
 
 
 def breakdown_search(request):
-    form = SearchForm()
+    #form = SearchForm()
+    form = BreakdownForm()
     query = None
     results = []
-    if 'query' in request.GET:
-        form = SearchForm(request.GET)
+    if 'start_time' in request.GET:
+        form = BreakdownForm(request.GET)
         if form.is_valid():
-            query = form.cleaned_data['query']
+            print(form.cleaned_data)
+            breakdown_description_query = form.cleaned_data['breakdown_description']
             results = Breakdown.objects.annotate(
 #                search=SearchVector('breakdown_description')
             ).filter(
-                breakdown_description__icontains=query).order_by('-end_time')
+                breakdown_description__icontains=breakdown_description_query).order_by('-end_time')
         return render(request, 'all_breakdowns.html', {
                 'form': form,
                 'query': query,
