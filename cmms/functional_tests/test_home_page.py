@@ -1,11 +1,13 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 import sys
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
-from breakdowns.models import Machine
+from breakdowns.models import Machine, Breakdown
 
 
 class FunctionalTest(StaticLiveServerTestCase):
@@ -14,7 +16,7 @@ class FunctionalTest(StaticLiveServerTestCase):
     def setUpClass(self):
         super().setUpClass()
         self.browser = webdriver.Chrome()
-        Machine.objects.create(name="Machine 1")
+        self.Machine_1 = Machine.objects.create(name="Machine 1")
 
     @classmethod
     def tearDownClass(self):
@@ -68,10 +70,66 @@ class BreakdownRegistrationTest(FunctionalTest):
                                                         'All breakdowns')
         all_breakdowns.click()
 
-    # new page contains registered breakdowns
-        all_breakdowns_page_content = self.browser.find_element_by_id('content')
-        self.assertIn("Registered breakdowns", all_breakdowns_page_content.text)
-
     # table with all breakdowns contains just created breakdown
-        all_breakdowns_table = self.browser.find_element_by_id('all_breakdowns_table')
+        all_breakdowns_table = self.browser.find_element_by_id(
+            'all_breakdowns_table')
         self.assertIn('Main motor failure', all_breakdowns_table.text)
+
+
+class FilteringBreakdownsTest(FunctionalTest):
+    def create_breakdown(
+            self,
+            machine=None,
+            start_time='2009-10-25 14:30',
+            end_time='2009-10-25 15:30',
+            breakdown_description='test_description'):
+        if not machine:
+            machine = self.Machine_1
+        start_time = timezone.make_aware(parse_datetime(start_time))
+        end_time = timezone.make_aware(parse_datetime(end_time))
+        Breakdown.objects.create(
+            machine=self.Machine_1, start_time=start_time,
+            end_time=end_time, breakdown_description=breakdown_description)
+
+    def testFiltering(self):
+        breakdown_1 = self.create_breakdown(breakdown_description='breakdown_1')
+        breakdown_2 = self.create_breakdown(breakdown_description='breakdown_2')
+
+        # user enter home page and choose all_breakdowns tab
+        self.browser.get(self.live_server_url)
+        all_breakdowns = self.browser.find_element_by_link_text(
+                                                        'All breakdowns')
+        all_breakdowns.click()
+
+        # there is a form for filtering breakdowns
+        form = self.browser.find_element_by_class_name('form-group')
+
+        # user enter breakdown description and click search button
+        breakdown_description_field = form.find_element_by_id(
+                                                    'id_breakdown_description')
+        breakdown_description_field.send_keys('breakdown_1')
+        search_button = form.find_element_by_id('submit_form')
+        search_button.click()
+
+        # in table below appear one breakdown with description given above
+        breakdowns = self.browser.find_element_by_id(
+                                                        'all_breakdowns_table')
+        breakdowns_headers = [th.text for th in breakdowns.find_elements_by_css_selector('th')]
+        breakdowns_data = [td.text for td in breakdowns.find_elements_by_css_selector('td')]
+
+        self.assertEqual(len(breakdowns_headers), len(breakdowns_data))
+
+        # user want to filter other breakdowns with 'breakdown' in description
+        form = self.browser.find_element_by_class_name('form-group')
+
+        breakdown_description_field = form.find_element_by_id(
+                                                    'id_breakdown_description')
+        breakdown_description_field.clear()
+        breakdown_description_field.send_keys('breakdown')
+        search_button = form.find_element_by_id('submit_form')
+        search_button.click()
+
+        breakdowns = self.browser.find_element_by_id(
+                                                    'all_breakdowns_table')
+        breakdowns_data = [td.text for td in breakdowns.find_elements_by_css_selector('td')]
+        self.assertEqual(len(breakdowns_data), 8)
