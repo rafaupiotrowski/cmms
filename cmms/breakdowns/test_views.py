@@ -1,4 +1,5 @@
-import unittest
+from unittest.mock import patch
+from unittest import skip
 
 from django.urls import resolve
 from django.test import TestCase
@@ -78,3 +79,47 @@ class AllBreakdownsViewTest(TestCase):
         response = self.client.get('/all_breakdowns')
 
         self.assertEqual(response.context['last_breakdowns'][0], last_breakdown)
+
+
+class BreakdownDetailViewTest(TestCase):
+    def setUp(self):
+        self.machine = Machine.objects.create(name='Machine 1')
+
+    def prepare_breakdown(
+            self,
+            start_time='2009-10-01 14:30',
+            end_time='2009-10-01 15:30',
+            breakdown_description='Test breakdown'):
+        start_time = timezone.make_aware(parse_datetime(start_time))
+        end_time = timezone.make_aware(parse_datetime(end_time))
+        Breakdown.objects.create(
+            machine=self.machine,
+            start_time=start_time,
+            end_time=end_time,
+            breakdown_description=breakdown_description)
+
+    def test_breakdown_details_template_used(self):
+        self.prepare_breakdown()
+        breakdown = Breakdown.objects.all()[0]
+        breakdown_id = breakdown.pk
+
+        response = self.client.get('/all_breakdowns/details/%s' % breakdown_id)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'breakdown_details.html')
+
+    def test_breakdown_is_passed_to_details_template(self):
+        self.prepare_breakdown()
+        breakdown = Breakdown.objects.all()[0]
+        breakdown_id = breakdown.pk
+
+        response = self.client.get('/all_breakdowns/details/%s' % breakdown_id)
+
+        self.assertEqual(response.context['breakdown'], breakdown)
+
+    @skip
+    @patch('breakdowns.filters.testFilter')
+    def test_BreakdownFilter_called(self, test_mock):
+        test_mock.form = BreakdownForm()
+        self.client.get('/test')
+        test_mock.assert_called_once()

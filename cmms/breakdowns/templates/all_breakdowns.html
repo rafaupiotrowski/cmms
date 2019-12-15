@@ -17,6 +17,7 @@
          <th>Description</th>
          <th>Start time</th>
          <th>End time</th>
+         <th>Edit</th>
        </tr>
      </thead>
      <tbody>
@@ -26,6 +27,11 @@
          <td>{{ breakdown.breakdown_description }}</td>
          <td>{{ breakdown.start_time }}</td>
          <td>{{breakdown.end_time }}</td>
+         <td>
+           <form action="all_breakdowns/details/{{breakdown.pk}}">
+             <input type="submit" name="Details" value="Details" id="details">
+           </form>
+         </td>
        </tr>
        {% endfor %}
      </tbody>

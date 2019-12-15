@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+<!--  load widget_tweaks  -->
+{% block content %}
+<h1>Breakdown details</h1>
+<table class="table" id="details_table">
+  <tr>
+    <th>Breakdown id</th>
+    <td>{{breakdown.pk}}</td>
+  </tr>
+  <tr>
+    <th>Machine</th>
+    <td>{{breakdown.machine}}</td>
+  </tr>
+  <tr>
+    <th>Description</th>
+    <td>{{breakdown.breakdown_description}}</td>
+  </tr>
+  <tr>
+    <th>Start time</th>
+    <td>{{breakdown.start_time}}</td>
+  </tr>
+  <tr>
+    <th>End time</th>
+    <td>{{breakdown.end_time}}</td>
+  </tr>
+
+</table>
+{% endblock %}

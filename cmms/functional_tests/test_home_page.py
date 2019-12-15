@@ -2,6 +2,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 import sys
+import time
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -88,12 +89,13 @@ class FilteringBreakdownsTest(FunctionalTest):
         start_time = timezone.make_aware(parse_datetime(start_time))
         end_time = timezone.make_aware(parse_datetime(end_time))
         Breakdown.objects.create(
-            machine=self.Machine_1, start_time=start_time,
+            machine=machine, start_time=start_time,
             end_time=end_time, breakdown_description=breakdown_description)
 
     def testFiltering(self):
-        breakdown_1 = self.create_breakdown(breakdown_description='breakdown_1')
-        breakdown_2 = self.create_breakdown(breakdown_description='breakdown_2')
+        print('test filtering first line, all machines: ', Machine.objects.all())
+        self.create_breakdown(breakdown_description='breakdown_1')
+        self.create_breakdown(breakdown_description='breakdown_2')
 
         # user enter home page and choose all_breakdowns tab
         self.browser.get(self.live_server_url)
@@ -132,4 +134,23 @@ class FilteringBreakdownsTest(FunctionalTest):
         breakdowns = self.browser.find_element_by_id(
                                                     'all_breakdowns_table')
         breakdowns_data = [td.text for td in breakdowns.find_elements_by_css_selector('td')]
-        self.assertEqual(len(breakdowns_data), 8)
+        self.assertEqual(len(breakdowns_data), 10)
+
+    def test_breakdown_details_view(self):
+        breakdown_details_machine = Machine.objects.create(name='breakdown_details_machine')
+        self.create_breakdown(
+                            machine=breakdown_details_machine,
+                            breakdown_description='breakdown_details_test')
+
+        self.browser.get(self.live_server_url)
+        all_breakdowns = self.browser.find_element_by_link_text(
+                                                                'All breakdowns')
+        all_breakdowns.click()
+
+        # user want to see breakdowns details, so click on details button
+        details_button = self.browser.find_element_by_id('details')
+        details_button.click()
+
+        # breakdown description is displayed on page
+        page_content = self.browser.page_source
+        self.assertIn('breakdown_details_test', page_content)

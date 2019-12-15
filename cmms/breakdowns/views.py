@@ -3,7 +3,7 @@ from django.contrib import messages
 
 from .forms import BreakdownForm
 from .models import Breakdown
-from .filters import BreakdownFilter
+from .filters import BreakdownFilter, testFilter
 
 # Create your views here.
 
@@ -30,3 +30,18 @@ def all_breakdowns(request):
     return render(request, 'all_breakdowns.html', {
         'last_breakdowns': last_breakdowns, 'filter': breakdown_filter,
         'form': filter_form, })
+
+
+def details(request, breakdown_id):
+    breakdown = Breakdown.objects.get(pk=breakdown_id)
+    return render(
+        request, 'breakdown_details.html',
+        {'breakdown': breakdown})
+
+
+def test(request):
+    test_filter = testFilter()
+    test_filter_form = test_filter.form
+    return render(request, 'all_breakdowns.html', {
+        'last_breakdowns': None, 'filter': None,
+        'form': test_filter_form, })
